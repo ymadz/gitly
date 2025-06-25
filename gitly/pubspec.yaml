@@ -30,10 +30,6 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  provider: ^6.0.0         # for state management
-  timeline_tile: ^2.0.0    # for visual timeline
-  flutter_svg: ^2.0.0      # if you want to draw SVG graphics
-
 
 
   # The following adds the Cupertino Icons font to your application.
