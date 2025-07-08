@@ -17,6 +17,39 @@ class GitNode {
   });
 }
 
+class GitGraphWidget extends StatelessWidget {
+  final bool isInitialized;
+  final bool simulateInitOnly;
+
+  const GitGraphWidget({
+    super.key,
+    this.isInitialized = false,
+    this.simulateInitOnly = false,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return CustomPaint(
+      painter: GitGraphPainter(
+        nodes: [
+          if (isInitialized)
+            GitNode(
+              id: 'c0',
+              message: 'Initial commit',
+              parentIds: [],
+              branch: 'main',
+              position: const Offset(100, 100),
+            )
+        ],
+        headId: isInitialized ? 'c0' : '',
+        branchHeads: isInitialized ? {'main': 'c0'} : {},
+      ),
+      child: Container(),
+    );
+  }
+}
+
+
 class GitGraphScreen extends StatefulWidget {
   const GitGraphScreen({super.key});
 
@@ -154,7 +187,8 @@ class _GitGraphScreenState extends State<GitGraphScreen> {
           _pushUndo();
           branches.add(branchName);
           branchHeads[branchName] = branchHeads[currentBranch] ?? "";
-          branchXOffsets[branchName] = branchXOffsets[currentBranch] ?? 100; // NEW
+          branchXOffsets[branchName] =
+              branchXOffsets[currentBranch] ?? 100; // NEW
           _addConsoleLog("✅ Created branch '$branchName'.");
         } else {
           _addConsoleLog("⚠️ Branch '$branchName' already exists.");
@@ -181,7 +215,8 @@ class _GitGraphScreenState extends State<GitGraphScreen> {
           _addConsoleLog("❌ '$target' is not a valid branch or commit ID.");
         }
       } else {
-        _addConsoleLog("❌ Invalid checkout syntax. Use: git checkout <branch|commit_id>");
+        _addConsoleLog(
+            "❌ Invalid checkout syntax. Use: git checkout <branch|commit_id>");
       }
     } else if (trimmed.startsWith('git merge')) {
       final parts = trimmed.split(' ');
@@ -216,7 +251,8 @@ class _GitGraphScreenState extends State<GitGraphScreen> {
               branchHeads[currentBranch] = id;
             });
 
-            _addConsoleLog("🔀 Merged branch '$mergeBranch' into '$currentBranch'.");
+            _addConsoleLog(
+                "🔀 Merged branch '$mergeBranch' into '$currentBranch'.");
           }
         }
       } else {
@@ -227,7 +263,8 @@ class _GitGraphScreenState extends State<GitGraphScreen> {
         _addConsoleLog("[$currentBranch] ${node.id}: ${node.message}");
       }
     } else if (trimmed == 'git status') {
-      _addConsoleLog("📝 On branch '$currentBranch'. Last commit: ${branchHeads[currentBranch] ?? "None"}");
+      _addConsoleLog(
+          "📝 On branch '$currentBranch'. Last commit: ${branchHeads[currentBranch] ?? "None"}");
     } else if (trimmed == 'git reset --hard') {
       _resetSimulation();
       _addConsoleLog("🔄 Simulation reset.");
@@ -264,120 +301,134 @@ class _GitGraphScreenState extends State<GitGraphScreen> {
   }
 
   @override
+  @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      themeMode: isDarkTheme ? ThemeMode.dark : ThemeMode.light,
-      darkTheme: ThemeData.dark(),
-      theme: ThemeData.light(),
-      home: Scaffold(
-        appBar: AppBar(
-          title: Text(!isInitialized ? "Gitly: Git Graph Visualizer" : "Gitly: On '$currentBranch'"),
-          actions: [
-            IconButton(icon: const Icon(Icons.undo), onPressed: _undo),
-            IconButton(icon: const Icon(Icons.redo), onPressed: _redo),
-            IconButton(icon: const Icon(Icons.refresh), onPressed: _resetSimulation),
-            IconButton(
-              icon: Icon(isDarkTheme ? Icons.wb_sunny : Icons.nightlight_round),
-              onPressed: () => setState(() => isDarkTheme = !isDarkTheme),
-            ),
-          ],
-        ),
-        body: Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Column(
-                children: [
-                  TextField(
-                    controller: controller,
-                    focusNode: _focusNode,
-                    onChanged: (val) {
-                      setState(() {
-                        suggestions = gitCommands.where((cmd) => cmd.startsWith(val)).toList();
-                      });
-                    },
-                    onSubmitted: _handleCommand,
-                    decoration: InputDecoration(
-                      labelText: isInitialized ? "Enter Git command" : "Run 'git init' to begin",
-                      border: const OutlineInputBorder(),
-                      errorText: error,
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(!isInitialized
+            ? "Gitly: Git Graph Visualizer"
+            : "Gitly: On '$currentBranch'"),
+        leading: Navigator.canPop(context)
+            ? IconButton(
+                icon: const Icon(Icons.arrow_back),
+                onPressed: () => Navigator.pop(context),
+              )
+            : null,
+        actions: [
+          IconButton(icon: const Icon(Icons.undo), onPressed: _undo),
+          IconButton(icon: const Icon(Icons.redo), onPressed: _redo),
+          IconButton(
+              icon: const Icon(Icons.refresh), onPressed: _resetSimulation),
+          IconButton(
+            icon: Icon(isDarkTheme ? Icons.wb_sunny : Icons.nightlight_round),
+            onPressed: () => setState(() => isDarkTheme = !isDarkTheme),
+          ),
+        ],
+      ),
+      body: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Column(
+              children: [
+                TextField(
+                  controller: controller,
+                  focusNode: _focusNode,
+                  onChanged: (val) {
+                    setState(() {
+                      suggestions = gitCommands
+                          .where((cmd) => cmd.startsWith(val))
+                          .toList();
+                    });
+                  },
+                  onSubmitted: _handleCommand,
+                  decoration: InputDecoration(
+                    labelText: isInitialized
+                        ? "Enter Git command"
+                        : "Run 'git init' to begin",
+                    border: const OutlineInputBorder(),
+                    errorText: error,
+                  ),
+                ),
+                if (suggestions.isNotEmpty)
+                  Container(
+                    margin: const EdgeInsets.only(top: 4),
+                    decoration: BoxDecoration(
+                      color: Colors.grey.shade900,
+                      border: Border.all(color: Colors.white24),
+                    ),
+                    child: Column(
+                      children: suggestions.map((s) {
+                        return ListTile(
+                          dense: true,
+                          title: Text(s, style: const TextStyle(fontSize: 13)),
+                          onTap: () {
+                            controller.text = s;
+                            _focusNode.requestFocus();
+                            setState(() => suggestions.clear());
+                          },
+                        );
+                      }).toList(),
                     ),
                   ),
-                  if (suggestions.isNotEmpty)
-                    Container(
-                      margin: const EdgeInsets.only(top: 4),
-                      decoration: BoxDecoration(
-                        color: Colors.grey.shade900,
-                        border: Border.all(color: Colors.white24),
+              ],
+            ),
+          ),
+          Expanded(
+            flex: 2,
+            child: InteractiveViewer(
+              panEnabled: true,
+              scaleEnabled: true,
+              minScale: 0.5,
+              maxScale: 2.5,
+              child: Stack(
+                children: [
+                  CustomPaint(
+                    painter: GitGraphPainter(
+                        nodes: nodes, headId: headId, branchHeads: branchHeads),
+                    child: Container(),
+                  ),
+                  ...nodes.map((node) {
+                    return Positioned(
+                      left: node.position.dx - 10,
+                      top: node.position.dy - 10,
+                      child: Tooltip(
+                        message: node.id,
+                        child: GestureDetector(
+                          onTap: () {
+                            Clipboard.setData(ClipboardData(text: node.id));
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                  content:
+                                      Text('📋 Copied commit ID: ${node.id}')),
+                            );
+                          },
+                          child: Container(
+                              width: 20, height: 20, color: Colors.transparent),
+                        ),
                       ),
-                      child: Column(
-                        children: suggestions.map((s) {
-                          return ListTile(
-                            dense: true,
-                            title: Text(s, style: const TextStyle(fontSize: 13)),
-                            onTap: () {
-                              controller.text = s;
-                              _focusNode.requestFocus();
-                              setState(() => suggestions.clear());
-                            },
-                          );
-                        }).toList(),
-                      ),
-                    ),
+                    );
+                  }),
                 ],
               ),
             ),
-            Expanded(
-              flex: 2,
-              child: InteractiveViewer(
-                panEnabled: true,
-                scaleEnabled: true,
-                minScale: 0.5,
-                maxScale: 2.5,
-                child: Stack(
-                  children: [
-                    CustomPaint(
-                      painter: GitGraphPainter(nodes: nodes, headId: headId, branchHeads: branchHeads),
-                      child: Container(),
-                    ),
-                    ...nodes.map((node) {
-                      return Positioned(
-                        left: node.position.dx - 10,
-                        top: node.position.dy - 10,
-                        child: Tooltip(
-                          message: node.id,
-                          child: GestureDetector(
-                            onTap: () {
-                              Clipboard.setData(ClipboardData(text: node.id));
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(content: Text('📋 Copied commit ID: ${node.id}')),
-                              );
-                            },
-                            child: Container(width: 20, height: 20, color: Colors.transparent),
-                          ),
-                        ),
-                      );
-                    }),
-                  ],
-                ),
+          ),
+          Expanded(
+            flex: 1,
+            child: Container(
+              padding: const EdgeInsets.all(8),
+              color: Colors.black54,
+              child: ListView.builder(
+                reverse: true,
+                itemCount: consoleLog.length,
+                itemBuilder: (context, index) {
+                  return Text(consoleLog[index],
+                      style: const TextStyle(fontSize: 12));
+                },
               ),
             ),
-            Expanded(
-              flex: 1,
-              child: Container(
-                padding: const EdgeInsets.all(8),
-                color: Colors.black54,
-                child: ListView.builder(
-                  reverse: true,
-                  itemCount: consoleLog.length,
-                  itemBuilder: (context, index) {
-                    return Text(consoleLog[index], style: const TextStyle(fontSize: 12));
-                  },
-                ),
-              ),
-            ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
@@ -388,22 +439,30 @@ class GitGraphPainter extends CustomPainter {
   final String headId;
   final Map<String, String> branchHeads;
 
-  GitGraphPainter({required this.nodes, required this.headId, required this.branchHeads});
+  GitGraphPainter(
+      {required this.nodes, required this.headId, required this.branchHeads});
 
   @override
   void paint(Canvas canvas, Size size) {
     final nodePaint = Paint()..color = Colors.yellow;
-    final linePaint = Paint()..color = Colors.white..strokeWidth = 2;
+    final linePaint = Paint()
+      ..color = Colors.white
+      ..strokeWidth = 2;
 
     for (var node in nodes) {
       for (var parentId in node.parentIds) {
-        final parent = nodes.firstWhere((n) => n.id == parentId, orElse: () => node);
+        final parent =
+            nodes.firstWhere((n) => n.id == parentId, orElse: () => node);
         canvas.drawLine(parent.position, node.position, linePaint);
       }
-      canvas.drawRect(Rect.fromCenter(center: node.position, width: 20, height: 20), nodePaint);
+      canvas.drawRect(
+          Rect.fromCenter(center: node.position, width: 20, height: 20),
+          nodePaint);
 
       final textPainter = TextPainter(
-        text: TextSpan(text: node.message, style: TextStyle(color: Colors.white, fontSize: 10)),
+        text: TextSpan(
+            text: node.message,
+            style: TextStyle(color: Colors.white, fontSize: 10)),
         textDirection: TextDirection.ltr,
       );
       textPainter.layout(minWidth: 0, maxWidth: 150);
@@ -415,7 +474,8 @@ class GitGraphPainter extends CustomPainter {
       final commitId = entry.value;
       final node = nodes.firstWhere((n) => n.id == commitId);
       final labelPainter = TextPainter(
-        text: TextSpan(text: branch, style: TextStyle(color: Colors.green, fontSize: 10)),
+        text: TextSpan(
+            text: branch, style: TextStyle(color: Colors.green, fontSize: 10)),
         textDirection: TextDirection.ltr,
       );
       labelPainter.layout();
@@ -430,7 +490,8 @@ class GitGraphPainter extends CustomPainter {
       final labelPainter = TextPainter(
         text: TextSpan(
           text: 'HEAD',
-          style: TextStyle(color: Colors.cyan, fontSize: 10, fontWeight: FontWeight.bold),
+          style: TextStyle(
+              color: Colors.cyan, fontSize: 10, fontWeight: FontWeight.bold),
         ),
         textDirection: TextDirection.ltr,
       );
