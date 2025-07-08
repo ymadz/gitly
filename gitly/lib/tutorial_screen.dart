@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'level_screen.dart';
+import 'level2_screen.dart'; // Add this import
+
 
 class TutorialScreen extends StatelessWidget {
   const TutorialScreen({super.key});
@@ -50,7 +52,8 @@ class TutorialScreen extends StatelessWidget {
                     ],
                   ),
                   child: ListTile(
-                    contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                    contentPadding: const EdgeInsets.symmetric(
+                        horizontal: 20, vertical: 12),
                     leading: CircleAvatar(
                       backgroundColor: const Color(0xFFFF6B6B),
                       child: Text(
@@ -84,9 +87,18 @@ class TutorialScreen extends StatelessWidget {
                             ),
                           ),
                         );
-                      } else {
+                      } else if (index == 1) {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => const Level2Screen(),
+                          ),
+                        );
+                      }else {
                         ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('🚧 Challenge not yet implemented')),
+                          const SnackBar(
+                              content:
+                                  Text('🚧 Challenge not yet implemented')),
                         );
                       }
                     },
