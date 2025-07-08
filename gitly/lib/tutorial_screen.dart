@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'level_screen.dart';
 import 'level2_screen.dart'; // Add this import
-
+import 'level3_screen.dart';
 
 class TutorialScreen extends StatelessWidget {
   const TutorialScreen({super.key});
@@ -11,7 +11,7 @@ class TutorialScreen extends StatelessWidget {
     final List<Map<String, String>> challenges = [
       {'title': 'Level 1: Initialize a Repository', 'desc': "Learn 'git init'"},
       {'title': 'Level 2: Make a Commit', 'desc': "Learn 'git commit'"},
-      // Add more levels later
+      {'title': 'Level 3: Check Git Status', 'desc': "Learn 'git status'"},
     ];
 
     return Scaffold(
@@ -94,7 +94,14 @@ class TutorialScreen extends StatelessWidget {
                             builder: (_) => const Level2Screen(),
                           ),
                         );
-                      }else {
+                      } else if (index == 2) {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => const Level3Screen(),
+                          ),
+                        );
+                      } else {
                         ScaffoldMessenger.of(context).showSnackBar(
                           const SnackBar(
                               content:
