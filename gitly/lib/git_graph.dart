@@ -319,10 +319,10 @@ class _GitGraphScreenState extends State<GitGraphScreen> {
           IconButton(icon: const Icon(Icons.redo), onPressed: _redo),
           IconButton(
               icon: const Icon(Icons.refresh), onPressed: _resetSimulation),
-          IconButton(
-            icon: Icon(isDarkTheme ? Icons.wb_sunny : Icons.nightlight_round),
-            onPressed: () => setState(() => isDarkTheme = !isDarkTheme),
-          ),
+          // IconButton(
+          //   icon: Icon(isDarkTheme ? Icons.wb_sunny : Icons.nightlight_round),
+          //   onPressed: () => setState(() => isDarkTheme = !isDarkTheme),
+          // ),
         ],
       ),
       body: Column(

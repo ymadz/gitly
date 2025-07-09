@@ -320,26 +320,26 @@ class _Level2ScreenState extends State<Level2Screen> {
                                 ),
                               ),
                             ),
-                            if (isCompleted)
-                              Padding(
-                                padding: const EdgeInsets.only(top: 20),
-                                child: ElevatedButton.icon(
-                                  style: ElevatedButton.styleFrom(
-                                    backgroundColor: const Color(0xFF800000),
-                                    padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(12),
-                                    ),
-                                  ),
-                                  icon: const Icon(Icons.arrow_forward),
-                                  label: const Text('Next Level'),
-                                  onPressed: () {
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                      const SnackBar(content: Text('🚧 Next level not implemented')),
-                                    );
-                                  },
-                                ),
-                              ),
+                            // if (isCompleted)
+                            //   Padding(
+                            //     padding: const EdgeInsets.only(top: 20),
+                            //     child: ElevatedButton.icon(
+                            //       style: ElevatedButton.styleFrom(
+                            //         backgroundColor: const Color(0xFF800000),
+                            //         padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                            //         shape: RoundedRectangleBorder(
+                            //           borderRadius: BorderRadius.circular(12),
+                            //         ),
+                            //       ),
+                            //       icon: const Icon(Icons.arrow_forward),
+                            //       label: const Text('Next Level'),
+                            //       onPressed: () {
+                            //         ScaffoldMessenger.of(context).showSnackBar(
+                            //           const SnackBar(content: Text('🚧 Next level not implemented')),
+                            //         );
+                            //       },
+                            //     ),
+                            //   ),
                           ],
                         ),
                       ),
