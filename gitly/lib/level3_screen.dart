@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:confetti/confetti.dart';
 import 'dart:math';
-import 'git_graph.dart';
 
 class Level3Screen extends StatefulWidget {
   const Level3Screen({super.key});
