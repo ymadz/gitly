@@ -1,16 +1,12 @@
-# gitly
+# Gitly Flutter app
 
-A new Flutter project.
+This directory contains the Flutter application for the [Gitly repository](../README.md).
 
-## Getting Started
+From this directory, install dependencies and run the web demo with:
 
-This project is a starting point for a Flutter application.
+```bash
+flutter pub get
+flutter run -d chrome --web-port 7357
+```
 
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+See the repository-level README for the project overview, screenshots, test commands, and deployment notes.
